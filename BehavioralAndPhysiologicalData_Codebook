@@ -1,0 +1,41 @@
+This is the codebook for the datafile "BehavioralAndPhysiologicalData" from the Endotoxin Resting State project 2015
+File by Gustav Nilsonne 2015-04-04
+Data by Bianka Karshikoff, John Axelsson, Anna Andreasson, and Mats Lekander
+
+Variables:
+subject = Unique subject ID, numeric
+group = Randomisation key, factor "Endotoxin" or "Placebo"
+sex = Sex, factor "female" or "male"
+HR_X = Heart rate, beats per minute, numeric. Five measures were made, yielding five columns where X = 0-4. Missing data were presumably not recorded in the first place.
+temp_X = Core body temperature, degrees C, numeric. Five measures were made, yielding five columns where X = 0-4.
+BP_systolic_X = Blood pressure, systolic, mm Hg, numeric. Five measures were made, yielding five columns where X = 0-4.
+BP_diastolic_X = Blood pressure, diastolic, mm Hg, numeric. Five measures were made, yielding five columns where X = 0-4.
+headache_X = Self-rated headache intensity, scale 0-9. TODO: Verify if 0-10, whether VAS or Likert-type. Five measures were made, yielding five columns where X = 0-4.
+back_pain_X = Self-rated back pain intensity, scale 0-9. TODO: Verify if 0-10, whether VAS or Likert-type. Five measures were made, yielding five columns where X = 0-4.
+nausea_X = Self-rated nausea, scale 0-9. TODO: Verify if 0-10, whether VAS or Likert-type. Five measures were made, yielding five columns where X = 0-4.
+srh5_2 = Self-rated health on a 5-point Likert-type scale, numeric. This rating was only performed once, at the time which is called "2" for the following self-rated health measures
+health_right_now_X = Self-rated health in the moment, scale 0-7, numeric. Three measures were made, yielding three columns where X = 1, 2, and 4.
+sq = Sickness Questionnaire. TODO!
+STAI_X = State-Trait Anxiety Inventory, State subscale, numeric. Three measures were made, yielding three columns where X = 1-3.
+PANAS_pos_X = Positive And Negative Affect Scale, Positive subscale, numeric. Three measures were made, yielding three columns where X = 1-3.
+PANAS_neg_X = Positive And Negative Affect Scale, Negative subscale, numeric. Three measures were made, yielding three columns where X = 1-3.
+stress_X = Self-rated stress, scale 0-100, numeric. Three measures were made, yielding three columns where X = 1-3.
+IL6_X = Interleukin-6, pg/ml, numeric. Four measures were made, yielding four columns where X = 1-4. Values have not been log-transformed. Subject 8 at time 4, subject 31 at time 2, and subject 50 at time 3 have been excluded due to hemolysis in the blood sample and are left blank. Subject 43 at time 4 has missing data. 
+IL8_X = Interleukin-8, pg/ml, numeric. Four measures were made, yielding four columns where X = 1-4. Values have not been log-transformed. Subject 8 at time 4, subject 31 at time 2, and subject 50 at time 3 have been excluded due to hemolysis in the blood sample and are left blank. Subject 43 at time 4 has missing data. 
+IL10_X = Interleukin-10, pg/ml, numeric. Four measures were made, yielding four columns where X = 1-4. Values have not been log-transformed. Subject 8 at time 4, subject 31 at time 2, and subject 50 at time 3 have been excluded due to hemolysis in the blood sample and are left blank. Subject 43 at time 4 has missing data. 
+IL13_X = Interleukin-13, pg/ml, numeric. Four measures were made, yielding four columns where X = 1-4. Values have not been log-transformed. Subject 8 at time 4, subject 31 at time 2, and subject 50 at time 3 have been excluded due to hemolysis in the blood sample and are left blank. Subject 43 at time 4 has missing data. 
+TNF_X = Tumor necrosis factor-alpha, pg/ml, numeric. Four measures were made, yielding four columns where X = 1-4. Values have not been log-transformed. Subject 8 at time 4, subject 31 at time 2, and subject 50 at time 3 have been excluded due to hemolysis in the blood sample and are left blank. Subject 43 at time 4 has missing data. 
+pain_threshold_baseline = Pressure on thumb required to reach threshold, kPa, numeric. 
+pain_threshold_diff = Difference from baseline to second recording of pain thresholds, kPa, numeric.
+midcingulate_insula_conn = Estimated strength of resting-state connectivity between midcingulate cortex and insula, numeric
+
+Variables removed before publishing:
+Date of experiment - removed in order to preserve participants' anonymity
+Weight - removed in order to preserve participants' anonymity
+Pregnancy - removed because it was redundant, no participants were pregnant
+Usual self-reported health "brukar må" - removed as it was a text string entered in Swedish and not coded into any standard format
+Usual self-reported fever frequency - removed as it was a text string entered in Swedish and not coded into any standard format
+Usual self-reported freqency of staying home from work due to illness - removed as it was a text string entered in Swedish and not coded into any standard format
+Self-reported subjective feeling at the same time as ratings of headache, back pain, and nausea - removed as it was a text string entered in Swedish and not coded into any standard format
+
+In addition, more variables were recorded but not processed within the scope of the paper for which these data and analyses are used.
