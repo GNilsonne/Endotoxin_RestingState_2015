@@ -669,10 +669,62 @@ effects_table$p <- c(ttest_HR$p.value, ttest_temp$p.value,
                      ttest_back_pain$p.value,
                      ttest_nausea$p.value,
                      ttest_pain_threshold$p.value)
+effects_table$p_fdr <- p.adjust(effects_table$p, method = "fdr")
 write.csv(effects_table, file = "C:/Users/Gustav Nilsonne/Box Sync/Gustavs_arbete/Pek/Endotoxin resting state/Endotoxin_RestingState_2015/EffectsTable.csv", row.names=FALSE)
 
 
 # ANALYSE AND PLOT BIVARIATE RELATIONSHIPS TO BRAIN CONNECTIVITY
+pdf("Fig_HRcorr.pdf")
+par(mar=c(6, 5, 0, 1))
+plot(midcingulate_insula_conn ~ HR_responses, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "Beats per minute", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
+axis(2, at = c(-0.3, -0.1, 0.1, 0.3), cex.axis = 2.5)
+lm_HR <- lm(midcingulate_insula_conn ~ HR_responses, data = data[data$group == "Endotoxin", ])
+X <- c(min(data$HR_responses, na.rm = T), max(data$HR_responses, na.rm = T))
+Y <- predict(lm_HR, newdata=data.frame(HR_responses=X))
+lines(x=X, y=Y, col = "red", lwd = 2)
+coef <- round(lm_HR$coefficients[2], 2)
+#coefLower <- round(confint(lm_HR)[2, 1], 2)
+#coefUpper <- round(confint(lm_HR)[2, 2], 2)
+legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
+  as.expression(bquote(beta == .(coef))),
+  as.expression(bquote(r[2] == .(round(summary(lm_HR)$r.squared, 2)))),
+  as.expression(bquote(p == .(round(summary(lm_HR)$coefficients[2, 4], 2))))))
+dev.off()
+
+pdf("Fig_tempcorr.pdf")
+par(mar=c(6, 5, 0, 1))
+plot(midcingulate_insula_conn ~ temp_responses, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "Degrees C", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
+axis(2, at = c(-0.3, -0.1, 0.1, 0.3), cex.axis = 2.5)
+lm_temp <- lm(midcingulate_insula_conn ~ temp_responses, data = data[data$group == "Endotoxin", ])
+X <- c(min(data$temp_responses, na.rm = T), max(data$temp_responses, na.rm = T))
+Y <- predict(lm_temp, newdata=data.frame(temp_responses=X))
+lines(x=X, y=Y, col = "red", lwd = 2)
+coef <- round(lm_temp$coefficients[2], 2)
+#coefLower <- round(confint(lm_temp)[2, 1], 2)
+#coefUpper <- round(confint(lm_temp)[2, 2], 2)
+legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
+  as.expression(bquote(beta == .(coef))),
+  as.expression(bquote(r[2] == .(round(summary(lm_temp)$r.squared, 2)))),
+  as.expression(bquote(p == .(round(summary(lm_temp)$coefficients[2, 4], 2))))))
+dev.off()
+
+pdf("Fig_BP_systoliccorr.pdf")
+par(mar=c(6, 5, 0, 1))
+plot(midcingulate_insula_conn ~ BP_systolic_responses, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "mm Hg", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
+axis(2, at = c(-0.3, -0.1, 0.1, 0.3), cex.axis = 2.5)
+lm_BP_systolic <- lm(midcingulate_insula_conn ~ BP_systolic_responses, data = data[data$group == "Endotoxin", ])
+X <- c(min(data$BP_systolic_responses, na.rm = T), max(data$BP_systolic_responses, na.rm = T))
+Y <- predict(lm_BP_systolic, newdata=data.frame(BP_systolic_responses=X))
+lines(x=X, y=Y, col = "red", lwd = 2)
+coef <- round(lm_BP_systolic$coefficients[2], 2)
+#coefLower <- round(confint(lm_BP_systolic)[2, 1], 2)
+#coefUpper <- round(confint(lm_BP_systolic)[2, 2], 2)
+legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
+  as.expression(bquote(beta == .(coef))),
+  as.expression(bquote(r[2] == .(round(summary(lm_BP_systolic)$r.squared, 2)))),
+  as.expression(bquote(p == .(round(summary(lm_BP_systolic)$coefficients[2, 4], 2))))))
+dev.off()
+
 pdf("Fig_IL6corr.pdf")
 par(mar=c(6, 5, 0, 1))
 plot(midcingulate_insula_conn ~ IL6_responses, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "log IL-6, pg/ml", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
@@ -888,7 +940,7 @@ lines(x=X, y=Y, col = "red", lwd = 2)
 coef <- round(lm_nausea$coefficients[2], 2)
 #coefLower <- round(confint(lm_nausea)[2, 1], 2)
 #coefUpper <- round(confint(lm_nausea)[2, 2], 2)
-legend("bottomright", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
+legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
   as.expression(bquote(beta == .(coef))),
   as.expression(bquote(r[2] == .(round(summary(lm_nausea)$r.squared, 2)))),
   as.expression(bquote(p == .(round(summary(lm_nausea)$coefficients[2, 4], 2))))))
