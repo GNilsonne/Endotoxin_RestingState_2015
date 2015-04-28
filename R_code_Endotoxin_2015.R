@@ -288,115 +288,34 @@ es_TNF <- tes(t = ttest_TNF$statistic, n.1 = length(data$TNF_responses[data$grou
 legend("topright", legend = paste("d = ", es_TNF$d, " [", es_TNF$l.d, ", ", es_TNF$u.d, "]", sep = ""), bty = "n")
 
 
-# 9. SQ total
-sq_total_data <- data[, c("subject", "group", "sq_total_1", "sq_total_2", "sq_total_4")]
-sq_total_data <- reshape(sq_total_data, direction = 'long', varying = 3:5, v.names = "sq_total", timevar = "time", sep = "_")
-sq_total_agg <- aggregate(sq_total_data, by=list(as.logical(as.integer(sq_total_data$group)-1), as.numeric(sq_total_data$time)), FUN=mean, na.rm=TRUE)
+# 9. SQ
+sq_data <- data[, c("subject", "group", "sq_1", "sq_2", "sq_4")]
+sq_data <- reshape(sq_data, direction = 'long', varying = 3:5, v.names = "sq", timevar = "time", sep = "_")
+sq_agg <- aggregate(sq_data, by=list(as.logical(as.integer(sq_data$group)-1), as.numeric(sq_data$time)), FUN=mean, na.rm=TRUE)
 
-pdf("Fig_sq_total.pdf")
+pdf("Fig_sq.pdf")
 par(mar=c(6, 5, 1, 1))
-plot(sq_total ~ time, data = sq_total_data, pch = "", xlab = "Time of measurement", ylab = "Score", main = "", bty = "n", cex.axis = 2, cex.lab = 2, mgp = c(3.5, 1.5, 0), xaxt = "n")
-for (i in unique(sq_total_data$subject[sq_total_data$group == "Placebo"])){
-  lines(sq_total ~ time, data = sq_total_data[sq_total_data$subject == i, ], col = "lightblue")
+plot(sq ~ time, data = sq_data, pch = "", xlab = "Time of measurement", ylab = "Score", main = "", bty = "n", cex.axis = 2, cex.lab = 2, mgp = c(3.5, 1.5, 0), xaxt = "n")
+for (i in unique(sq_data$subject[sq_data$group == "Placebo"])){
+  lines(sq ~ time, data = sq_data[sq_data$subject == i, ], col = "lightblue")
 }
-for (i in unique(sq_total_data$subject[sq_total_data$group == "Endotoxin"])){
-  lines(sq_total ~ time, data = sq_total_data[sq_total_data$subject == i, ], col = "pink")
+for (i in unique(sq_data$subject[sq_data$group == "Endotoxin"])){
+  lines(sq ~ time, data = sq_data[sq_data$subject == i, ], col = "pink")
 }
-lines(sq_total ~ time, data = sq_total_agg[sq_total_agg$Group.1 == TRUE, ], col = "blue", lwd = 3)
-lines(sq_total ~ time, data = sq_total_agg[sq_total_agg$Group.1 == FALSE, ], col = "red", lwd = 3)
+lines(sq ~ time, data = sq_agg[sq_agg$Group.1 == TRUE, ], col = "blue", lwd = 3)
+lines(sq ~ time, data = sq_agg[sq_agg$Group.1 == FALSE, ], col = "red", lwd = 3)
 legend("topleft", legend = c("Endotoxin", "Placebo"), col = c("red", "blue"), lty = 1, lwd = 3, bty = "n", cex = 2)
 axis(1, at = c(1, 2, 3, 4), cex.axis = 2, cex.lab = 2)
 dev.off()
 
-data$sq_total_responses <- data$sq_total_2 - data$sq_total_1 # We use the 2nd vs the 1st measure to estimate effect of endotoxin
-boxplot(sq_total_responses ~ group, data = data, frame.plot = F, main = "sq_total difference", ylab = " pg/ml")
-ttest_sq_total <- t.test(sq_total_responses ~ group, data = data)
-es_sq_total <- tes(t = ttest_sq_total$statistic, n.1 = length(data$sq_total_responses[data$group == "Endotoxin"]), n.2 = length(data$sq_total_responses[data$group == "Placebo"]))
-legend("topright", legend = paste("d = ", es_sq_total$d, " [", es_sq_total$l.d, ", ", es_sq_total$u.d, "]", sep = ""), bty = "n")
+data$sq_responses <- data$sq_2 - data$sq_1 # We use the 2nd vs the 1st measure to estimate effect of endotoxin
+boxplot(sq_responses ~ group, data = data, frame.plot = F, main = "sq difference", ylab = " pg/ml")
+ttest_sq <- t.test(sq_responses ~ group, data = data)
+es_sq <- tes(t = ttest_sq$statistic, n.1 = length(data$sq_responses[data$group == "Endotoxin"]), n.2 = length(data$sq_responses[data$group == "Placebo"]))
+legend("topright", legend = paste("d = ", es_sq$d, " [", es_sq$l.d, ", ", es_sq$u.d, "]", sep = ""), bty = "n")
 
 
-# 10. SQ pain
-sq_pain_data <- data[, c("subject", "group", "sq_pain_1", "sq_pain_2", "sq_pain_4")]
-sq_pain_data <- reshape(sq_pain_data, direction = 'long', varying = 3:5, v.names = "sq_pain", timevar = "time", sep = "_")
-sq_pain_agg <- aggregate(sq_pain_data, by=list(as.logical(as.integer(sq_pain_data$group)-1), as.numeric(sq_pain_data$time)), FUN=mean, na.rm=TRUE)
-
-pdf("Fig_sq_pain.pdf")
-par(mar=c(6, 5, 1, 1))
-plot(sq_pain ~ time, data = sq_pain_data, pch = "", xlab = "Time of measurement", ylab = "Score", main = "", bty = "n", cex.axis = 2, cex.lab = 2, mgp = c(3.5, 1.5, 0), xaxt = "n")
-for (i in unique(sq_pain_data$subject[sq_pain_data$group == "Placebo"])){
-  lines(sq_pain ~ time, data = sq_pain_data[sq_pain_data$subject == i, ], col = "lightblue")
-}
-for (i in unique(sq_pain_data$subject[sq_pain_data$group == "Endotoxin"])){
-  lines(sq_pain ~ time, data = sq_pain_data[sq_pain_data$subject == i, ], col = "pink")
-}
-lines(sq_pain ~ time, data = sq_pain_agg[sq_pain_agg$Group.1 == TRUE, ], col = "blue", lwd = 3)
-lines(sq_pain ~ time, data = sq_pain_agg[sq_pain_agg$Group.1 == FALSE, ], col = "red", lwd = 3)
-legend("topleft", legend = c("Endotoxin", "Placebo"), col = c("red", "blue"), lty = 1, lwd = 3, bty = "n", cex = 2)
-axis(1, at = c(1, 2, 3, 4), cex.axis = 2, cex.lab = 2)
-dev.off()
-
-data$sq_pain_responses <- data$sq_pain_2 - data$sq_pain_1 # We use the 2nd vs the 1st measure to estimate effect of endotoxin
-boxplot(sq_pain_responses ~ group, data = data, frame.plot = F, main = "sq_pain difference", ylab = " pg/ml")
-ttest_sq_pain <- t.test(sq_pain_responses ~ group, data = data)
-es_sq_pain <- tes(t = ttest_sq_pain$statistic, n.1 = length(data$sq_pain_responses[data$group == "Endotoxin"]), n.2 = length(data$sq_pain_responses[data$group == "Placebo"]))
-legend("topright", legend = paste("d = ", es_sq_pain$d, " [", es_sq_pain$l.d, ", ", es_sq_pain$u.d, "]", sep = ""), bty = "n")
-
-
-# 11. SQ fatigue
-sq_fatigue_data <- data[, c("subject", "group", "sq_energy_1", "sq_energy_2", "sq_energy_4")]
-sq_fatigue_data <- reshape(sq_fatigue_data, direction = 'long', varying = 3:5, v.names = "sq_fatigue", timevar = "time", sep = "_")
-sq_fatigue_agg <- aggregate(sq_fatigue_data, by=list(as.logical(as.integer(sq_fatigue_data$group)-1), as.numeric(sq_fatigue_data$time)), FUN=mean, na.rm=TRUE)
-
-pdf("Fig_sq_fatigue.pdf")
-par(mar=c(6, 5, 1, 1))
-plot(sq_fatigue ~ time, data = sq_fatigue_data, pch = "", xlab = "Time of measurement", ylab = "Score", main = "", bty = "n", cex.axis = 2, cex.lab = 2, mgp = c(3.5, 1.5, 0), xaxt = "n")
-for (i in unique(sq_fatigue_data$subject[sq_fatigue_data$group == "Placebo"])){
-  lines(sq_fatigue ~ time, data = sq_fatigue_data[sq_fatigue_data$subject == i, ], col = "lightblue")
-}
-for (i in unique(sq_fatigue_data$subject[sq_fatigue_data$group == "Endotoxin"])){
-  lines(sq_fatigue ~ time, data = sq_fatigue_data[sq_fatigue_data$subject == i, ], col = "pink")
-}
-lines(sq_fatigue ~ time, data = sq_fatigue_agg[sq_fatigue_agg$Group.1 == TRUE, ], col = "blue", lwd = 3)
-lines(sq_fatigue ~ time, data = sq_fatigue_agg[sq_fatigue_agg$Group.1 == FALSE, ], col = "red", lwd = 3)
-legend("topleft", legend = c("Endotoxin", "Placebo"), col = c("red", "blue"), lty = 1, lwd = 3, bty = "n", cex = 2)
-axis(1, at = c(1, 2, 3, 4), cex.axis = 2, cex.lab = 2)
-dev.off()
-
-data$sq_fatigue_responses <- data$sq_energy_2 - data$sq_energy_1 # We use the 2nd vs the 1st measure to estimate effect of endotoxin
-boxplot(sq_fatigue_responses ~ group, data = data, frame.plot = F, main = "sq_fatigue difference", ylab = " pg/ml")
-ttest_sq_fatigue <- t.test(sq_fatigue_responses ~ group, data = data)
-es_sq_fatigue <- tes(t = ttest_sq_fatigue$statistic, n.1 = length(data$sq_fatigue_responses[data$group == "Endotoxin"]), n.2 = length(data$sq_fatigue_responses[data$group == "Placebo"]))
-legend("topright", legend = paste("d = ", es_sq_fatigue$d, " [", es_sq_fatigue$l.d, ", ", es_sq_fatigue$u.d, "]", sep = ""), bty = "n")
-
-
-# 12. SQ affect
-sq_affect_data <- data[, c("subject", "group", "sq_affect_1", "sq_affect_2", "sq_affect_4")]
-sq_affect_data <- reshape(sq_affect_data, direction = 'long', varying = 3:5, v.names = "sq_affect", timevar = "time", sep = "_")
-sq_affect_agg <- aggregate(sq_affect_data, by=list(as.logical(as.integer(sq_affect_data$group)-1), as.numeric(sq_affect_data$time)), FUN=mean, na.rm=TRUE)
-
-pdf("Fig_sq_affect.pdf")
-par(mar=c(6, 5, 1, 1))
-plot(sq_affect ~ time, data = sq_affect_data, pch = "", xlab = "Time of measurement", ylab = "Score", main = "", bty = "n", cex.axis = 2, cex.lab = 2, mgp = c(3.5, 1.5, 0), xaxt = "n")
-for (i in unique(sq_affect_data$subject[sq_affect_data$group == "Placebo"])){
-  lines(sq_affect ~ time, data = sq_affect_data[sq_affect_data$subject == i, ], col = "lightblue")
-}
-for (i in unique(sq_affect_data$subject[sq_affect_data$group == "Endotoxin"])){
-  lines(sq_affect ~ time, data = sq_affect_data[sq_affect_data$subject == i, ], col = "pink")
-}
-lines(sq_affect ~ time, data = sq_affect_agg[sq_affect_agg$Group.1 == TRUE, ], col = "blue", lwd = 3)
-lines(sq_affect ~ time, data = sq_affect_agg[sq_affect_agg$Group.1 == FALSE, ], col = "red", lwd = 3)
-legend("topleft", legend = c("Endotoxin", "Placebo"), col = c("red", "blue"), lty = 1, lwd = 3, bty = "n", cex = 2)
-axis(1, at = c(1, 2, 3, 4), cex.axis = 2, cex.lab = 2)
-dev.off()
-
-data$sq_affect_responses <- data$sq_affect_2 - data$sq_affect_1 # We use the 2nd vs the 1st measure to estimate effect of endotoxin
-boxplot(sq_affect_responses ~ group, data = data, frame.plot = F, main = "sq_affect difference", ylab = " pg/ml")
-ttest_sq_affect <- t.test(sq_affect_responses ~ group, data = data)
-es_sq_affect <- tes(t = ttest_sq_affect$statistic, n.1 = length(data$sq_affect_responses[data$group == "Endotoxin"]), n.2 = length(data$sq_affect_responses[data$group == "Placebo"]))
-legend("topright", legend = paste("d = ", es_sq_affect$d, " [", es_sq_affect$l.d, ", ", es_sq_affect$u.d, "]", sep = ""), bty = "n")
-
-
-# 13. Self-rated health now
+# 12. Self-rated health now
 health_now_data <- data[, c("subject", "group", "health_now_1", "health_now_2", "health_now_4")]
 health_now_data <- reshape(health_now_data, direction = 'long', varying = 3:5, v.names = "health_now", timevar = "time", sep = "_")
 health_now_agg <- aggregate(health_now_data, by=list(as.logical(as.integer(health_now_data$group)-1), as.numeric(health_now_data$time)), FUN=mean, na.rm=TRUE)
@@ -421,6 +340,18 @@ boxplot(health_now_responses ~ group, data = data, frame.plot = F, main = "healt
 ttest_health_now <- t.test(health_now_responses ~ group, data = data)
 es_health_now <- tes(t = ttest_health_now$statistic, n.1 = length(data$health_now_responses[data$group == "Endotoxin"]), n.2 = length(data$health_now_responses[data$group == "Placebo"]))
 legend("topright", legend = paste("d = ", es_health_now$d, " [", es_health_now$l.d, ", ", es_health_now$u.d, "]", sep = ""), bty = "n")
+
+
+# 13. SRH-5
+pdf("Fig_SRH5.pdf")
+par(mar=c(6, 5, 1, 1))
+boxplot(data$srh5[data$group == "Placebo"], data$srh5[data$group == "Endotoxin"], frame.plot = F, border = c("blue", "red"), ylim = c(1, 5), ylab = "Score", names = c("Placebo", "Endotoxin"))
+dev.off()
+
+boxplot(data$srh5[data$group == "Placebo"], data$srh5[data$group == "Endotoxin"], frame.plot = F, border = c("blue", "red"), ylim = c(1, 5), ylab = "Score", names = c("Placebo", "Endotoxin"))
+ttest_srh5 <- t.test(data$srh5[data$group == "Endotoxin"], data$srh5[data$group == "Placebo"])
+es_srh5 <- tes(t = ttest_srh5$statistic, n.1 = length(data$srh5[data$group == "Endotoxin"]), n.2 = length(data$srh5[data$group == "Placebo"]))
+legend("topright", legend = paste("d = ", es_srh5$d, " [", es_srh5$l.d, ", ", es_srh5$u.d, "]", sep = ""), bty = "n")
 
 
 # 14. Headache
@@ -561,9 +492,9 @@ write.csv(SelfRatedDataLong, file = "C:/Users/Gustav Nilsonne/Box Sync/Gustavs_a
 
 # TABULATE EFFECTS OF ENDOTOXIN
 effects_table <- data.frame(variable = c("Heart rate", "Temperature", "Systolic blood pressure", "log IL-6", "log IL-8", "log IL-10", "log IL-13", "log TNF",
-                                         "SQ total", "SQ pain", "SQ fatigue", "SQ affect", "Self-rated health now", "Headache", "Back pain", "Nausea", "Pain threshold"))
+                                         "SQ", "Self-rated health now", "Headache", "Back pain", "Nausea", "Pain threshold"))
 effects_table$timepoints_for_comparison <- c("3 and 4 vs 1", "3 and 4 vs 1", "3 vs 1", "2 and 3 vs 1", "2 and 3 vs 1", "2 and 3 vs 1", "2 and 3 vs 1", "2 and 3 vs 1",
-                              "2 vs 1", "2 vs 1", "2 vs 1", "2 vs 1", "2 vs 1", "3 and 4 vs 1", "3 and 4 vs 1", "3 and 4 vs 1", "2 vs 1")
+                              "2 vs 1", "2 vs 1", "3 and 4 vs 1", "3 and 4 vs 1", "3 and 4 vs 1", "2 vs 1")
 effects_table$effect_orig_scale <- c(ttest_HR$estimate[1] - ttest_HR$estimate[2], 
                                      ttest_temp$estimate[1] - ttest_temp$estimate[2],
                                      ttest_BP_systolic$estimate[1] - ttest_BP_systolic$estimate[2],
@@ -572,10 +503,7 @@ effects_table$effect_orig_scale <- c(ttest_HR$estimate[1] - ttest_HR$estimate[2]
                                      ttest_IL10$estimate[1] - ttest_IL10$estimate[2],
                                      ttest_IL13$estimate[1] - ttest_IL13$estimate[2],
                                      ttest_TNF$estimate[1] - ttest_TNF$estimate[2],
-                                     ttest_sq_total$estimate[1] - ttest_sq_total$estimate[2],
-                                     ttest_sq_pain$estimate[1] - ttest_sq_pain$estimate[2],
-                                     ttest_sq_fatigue$estimate[1] - ttest_sq_fatigue$estimate[2],
-                                     ttest_sq_affect$estimate[1] - ttest_sq_affect$estimate[2],
+                                     ttest_sq$estimate[1] - ttest_sq$estimate[2],
                                      ttest_health_now$estimate[1] - ttest_health_now$estimate[2],
                                      ttest_headache$estimate[1] - ttest_headache$estimate[2],
                                      ttest_back_pain$estimate[1] - ttest_back_pain$estimate[2],
@@ -589,10 +517,7 @@ effects_table$CI_orig_scale_lower <- c(ttest_HR$conf.int[1],
                                  ttest_IL10$conf.int[1],
                                  ttest_IL13$conf.int[1],
                                  ttest_TNF$conf.int[1],
-                                 ttest_sq_total$conf.int[1],
-                                 ttest_sq_pain$conf.int[1],
-                                 ttest_sq_fatigue$conf.int[1],
-                                 ttest_sq_affect$conf.int[1],
+                                 ttest_sq$conf.int[1],
                                  ttest_health_now$conf.int[1],
                                  ttest_headache$conf.int[1],
                                  ttest_back_pain$conf.int[1],
@@ -606,21 +531,18 @@ effects_table$CI_orig_scale_upper <- c(ttest_HR$conf.int[2],
                                        ttest_IL10$conf.int[2],
                                        ttest_IL13$conf.int[2],
                                        ttest_TNF$conf.int[2],
-                                       ttest_sq_total$conf.int[2],
-                                       ttest_sq_pain$conf.int[2],
-                                       ttest_sq_fatigue$conf.int[2],
-                                       ttest_sq_affect$conf.int[2],
+                                       ttest_sq$conf.int[2],
                                        ttest_health_now$conf.int[2],
                                        ttest_headache$conf.int[2],
                                        ttest_back_pain$conf.int[2],
                                        ttest_nausea$conf.int[2],
                                        ttest_pain_threshold$conf.int[2])
 effects_table$d <- c(es_HR$d, es_temp$d, es_BP_systolic$d, es_IL6$d, es_IL8$d, es_IL10$d, es_IL13$d, es_TNF$d,
-                     es_sq_total$d, es_sq_pain$d, es_sq_fatigue$d, es_sq_affect$d, es_health_now$d, es_headache$d, es_back_pain$d, es_nausea$d, es_pain_threshold$d)
+                     es_sq$d, es_health_now$d, es_headache$d, es_back_pain$d, es_nausea$d, es_pain_threshold$d)
 effects_table$CI_d_lower <- c(es_HR$l.d, es_temp$l.d, es_BP_systolic$l.d, es_IL6$l.d, es_IL8$l.d, es_IL10$l.d, es_IL13$l.d, es_TNF$l.d,
-                              es_sq_total$l.d, es_sq_pain$l.d, es_sq_fatigue$l.d, es_sq_affect$l.d, es_health_now$l.d, es_headache$l.d, es_back_pain$l.d, es_nausea$l.d, es_pain_threshold$l.d)
+                              es_sq$l.d, es_health_now$l.d, es_headache$l.d, es_back_pain$l.d, es_nausea$l.d, es_pain_threshold$l.d)
 effects_table$CI_d_upper <- c(es_HR$u.d, es_temp$u.d, es_BP_systolic$u.d, es_IL6$u.d, es_IL8$u.d, es_IL10$u.d, es_IL13$u.d, es_TNF$u.d,
-                              es_sq_total$u.d, es_sq_pain$u.d, es_sq_fatigue$u.d, es_sq_affect$u.d, es_health_now$u.d, es_headache$u.d, es_back_pain$u.d, es_nausea$u.d, es_pain_threshold$u.d)
+                              es_sq$u.d, es_health_now$u.d, es_headache$u.d, es_back_pain$u.d, es_nausea$u.d, es_pain_threshold$u.d)
 effects_table$t <- c(ttest_HR$statistic, ttest_temp$statistic,
                      ttest_BP_systolic$statistic,
                      ttest_IL6$statistic,
@@ -628,10 +550,7 @@ effects_table$t <- c(ttest_HR$statistic, ttest_temp$statistic,
                      ttest_IL10$statistic,
                      ttest_IL13$statistic,
                      ttest_TNF$statistic,
-                     ttest_sq_total$statistic,
-                     ttest_sq_pain$statistic,
-                     ttest_sq_fatigue$statistic,
-                     ttest_sq_affect$statistic,
+                     ttest_sq$statistic,
                      ttest_health_now$statistic,
                      ttest_headache$statistic,
                      ttest_back_pain$statistic,
@@ -644,10 +563,7 @@ effects_table$df <- c(ttest_HR$parameter, ttest_temp$parameter,
                       ttest_IL10$parameter,
                       ttest_IL13$parameter,
                       ttest_TNF$parameter,
-                      ttest_sq_total$parameter,
-                      ttest_sq_pain$parameter,
-                      ttest_sq_fatigue$parameter,
-                      ttest_sq_affect$parameter,
+                      ttest_sq$parameter,
                       ttest_health_now$parameter,
                       ttest_headache$parameter,
                       ttest_back_pain$parameter,
@@ -660,10 +576,7 @@ effects_table$p <- c(ttest_HR$p.value, ttest_temp$p.value,
                      ttest_IL10$p.value,
                      ttest_IL13$p.value,
                      ttest_TNF$p.value,
-                     ttest_sq_total$p.value,
-                     ttest_sq_pain$p.value,
-                     ttest_sq_fatigue$p.value,
-                     ttest_sq_affect$p.value,
+                     ttest_sq$p.value,
                      ttest_health_now$p.value,
                      ttest_headache$p.value,
                      ttest_back_pain$p.value,
@@ -810,72 +723,21 @@ legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(
   as.expression(bquote(p == .(round(summary(lm_TNF)$coefficients[2, 4], 2))))))
 dev.off()
 
-pdf("Fig_sq_totalcorr.pdf")
+pdf("Fig_sqcorr.pdf")
 par(mar=c(6, 5, 0, 1))
-plot(midcingulate_insula_conn ~ sq_total_responses, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "Score", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
+plot(midcingulate_insula_conn ~ sq_responses, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "Score", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
 axis(2, at = c(-0.3, -0.1, 0.1, 0.3), cex.axis = 2.5)
-lm_sq_total <- lm(midcingulate_insula_conn ~ sq_total_responses, data = data[data$group == "Endotoxin", ])
-X <- c(min(data$sq_total_responses, na.rm = T), max(data$sq_total_responses, na.rm = T))
-Y <- predict(lm_sq_total, newdata=data.frame(sq_total_responses=X))
+lm_sq <- lm(midcingulate_insula_conn ~ sq_responses, data = data[data$group == "Endotoxin", ])
+X <- c(min(data$sq_responses, na.rm = T), max(data$sq_responses, na.rm = T))
+Y <- predict(lm_sq, newdata=data.frame(sq_responses=X))
 lines(x=X, y=Y, col = "red", lwd = 2)
-coef <- round(lm_sq_total$coefficients[2], 2)
+coef <- round(lm_sq$coefficients[2], 2)
 #coefLower <- round(confint(lm_sq_total)[2, 1], 2)
 #coefUpper <- round(confint(lm_sq_total)[2, 2], 2)
 legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
   as.expression(bquote(beta == .(coef))),
-  as.expression(bquote(r[2] == .(round(summary(lm_sq_total)$r.squared, 2)))),
-  as.expression(bquote(p == .(round(summary(lm_sq_total)$coefficients[2, 4], 2))))))
-dev.off()
-
-pdf("Fig_sq_paincorr.pdf")
-par(mar=c(6, 5, 0, 1))
-plot(midcingulate_insula_conn ~ sq_pain_responses, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "Score", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
-axis(2, at = c(-0.3, -0.1, 0.1, 0.3), cex.axis = 2.5)
-lm_sq_pain <- lm(midcingulate_insula_conn ~ sq_pain_responses, data = data[data$group == "Endotoxin", ])
-X <- c(min(data$sq_pain_responses, na.rm = T), max(data$sq_pain_responses, na.rm = T))
-Y <- predict(lm_sq_pain, newdata=data.frame(sq_pain_responses=X))
-lines(x=X, y=Y, col = "red", lwd = 2)
-coef <- round(lm_sq_pain$coefficients[2], 2)
-#coefLower <- round(confint(lm_sq_pain)[2, 1], 2)
-#coefUpper <- round(confint(lm_sq_pain)[2, 2], 2)
-legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
-  as.expression(bquote(beta == .(coef))),
-  as.expression(bquote(r[2] == .(round(summary(lm_sq_pain)$r.squared, 2)))),
-  as.expression(bquote(p == .(round(summary(lm_sq_pain)$coefficients[2, 4], 2))))))
-dev.off()
-
-pdf("Fig_sq_fatiguecorr.pdf")
-par(mar=c(6, 5, 0, 1))
-plot(midcingulate_insula_conn ~ sq_fatigue_responses, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "Score", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
-axis(2, at = c(-0.3, -0.1, 0.1, 0.3), cex.axis = 2.5)
-lm_sq_fatigue <- lm(midcingulate_insula_conn ~ sq_fatigue_responses, data = data[data$group == "Endotoxin", ])
-X <- c(min(data$sq_fatigue_responses, na.rm = T), max(data$sq_fatigue_responses, na.rm = T))
-Y <- predict(lm_sq_fatigue, newdata=data.frame(sq_fatigue_responses=X))
-lines(x=X, y=Y, col = "red", lwd = 2)
-coef <- round(lm_sq_fatigue$coefficients[2], 2)
-#coefLower <- round(confint(lm_sq_fatigue)[2, 1], 2)
-#coefUpper <- round(confint(lm_sq_fatigue)[2, 2], 2)
-legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
-  as.expression(bquote(beta == .(coef))),
-  as.expression(bquote(r[2] == .(round(summary(lm_sq_fatigue)$r.squared, 2)))),
-  as.expression(bquote(p == .(round(summary(lm_sq_fatigue)$coefficients[2, 4], 2))))))
-dev.off()
-
-pdf("Fig_sq_affectcorr.pdf")
-par(mar=c(6, 5, 0, 1))
-plot(midcingulate_insula_conn ~ sq_affect_responses, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "Score", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
-axis(2, at = c(-0.3, -0.1, 0.1, 0.3), cex.axis = 2.5)
-lm_sq_affect <- lm(midcingulate_insula_conn ~ sq_affect_responses, data = data[data$group == "Endotoxin", ])
-X <- c(min(data$sq_affect_responses, na.rm = T), max(data$sq_affect_responses, na.rm = T))
-Y <- predict(lm_sq_affect, newdata=data.frame(sq_affect_responses=X))
-lines(x=X, y=Y, col = "red", lwd = 2)
-coef <- round(lm_sq_affect$coefficients[2], 2)
-#coefLower <- round(confint(lm_sq_affect)[2, 1], 2)
-#coefUpper <- round(confint(lm_sq_affect)[2, 2], 2)
-legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
-  as.expression(bquote(beta == .(coef))),
-  as.expression(bquote(r[2] == .(round(summary(lm_sq_affect)$r.squared, 2)))),
-  as.expression(bquote(p == .(round(summary(lm_sq_affect)$coefficients[2, 4], 2))))))
+  as.expression(bquote(r[2] == .(round(summary(lm_sq)$r.squared, 2)))),
+  as.expression(bquote(p == .(round(summary(lm_sq)$coefficients[2, 4], 2))))))
 dev.off()
 
 pdf("Fig_health_nowcorr.pdf")
@@ -887,6 +749,25 @@ X <- c(min(data$health_now_responses, na.rm = T), max(data$health_now_responses,
 Y <- predict(lm_health_now, newdata=data.frame(health_now_responses=X))
 lines(x=X, y=Y, col = "red", lwd = 2)
 coef <- round(lm_health_now$coefficients[2], 2)
+#coefLower <- round(confint(lm_health_now)[2, 1], 2)
+#coefUpper <- round(confint(lm_health_now)[2, 2], 2)
+legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
+  as.expression(bquote(beta == .(coef))),
+  as.expression(bquote(r[2] == .(round(summary(lm_health_now)$r.squared, 2)))),
+  as.expression(bquote(p == .(round(summary(lm_health_now)$coefficients[2, 4], 2))))))
+dev.off()
+
+# TODO: Debug the following paragraph
+# It will not accept formula specifications as in the others, for some reason
+pdf("Fig_srh5corr.pdf")
+par(mar=c(6, 5, 0, 1))
+plot(data[data$group == "Endotoxin", ]$midcingulate_insula_conn ~ data[data$group == "Endotoxin", ]$srh5, bty = "n", xlab = "Score", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
+axis(2, at = c(-0.3, -0.1, 0.1, 0.3), cex.axis = 2.5)
+lm_srh5 <- lm(data[data$group == "Endotoxin", ]$midcingulate_insula_conn ~ data[data$group == "Endotoxin", ]$srh5)
+X <- c(min(data$srh5, na.rm = T), max(data$srh5, na.rm = T))
+Y <- predict(lm_srh5, newdata=data.frame(srh5=X))
+lines(x=X, y=Y, col = "red", lwd = 2)
+coef <- round(lm_srh5$coefficients[2], 2)
 #coefLower <- round(confint(lm_health_now)[2, 1], 2)
 #coefUpper <- round(confint(lm_health_now)[2, 2], 2)
 legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
