@@ -442,36 +442,39 @@ legend("topright", legend = paste("d = ", es_nausea$d, " [", es_nausea$l.d, ", "
 
 
 # 17. Thumb pressure
-pain_threshold_data <- data[, c("subject", "group", "pain_threshold_baseline", "pain_threshold_diff")]
-pain_threshold_data2 <- pain_threshold_data
-pain_threshold_data2$pain_threshold_1 <- pain_threshold_data2$pain_threshold_baseline
-pain_threshold_data2$pain_threshold_2 <- pain_threshold_data2$pain_threshold_1 + pain_threshold_data2$pain_threshold_diff
-pain_threshold_data2 <- pain_threshold_data2[, c("subject", "group", "pain_threshold_1", "pain_threshold_2")]
-pain_threshold_data2 <- reshape(pain_threshold_data2, direction = 'long', varying = 3:4, v.names = "pain_threshold", timevar = "time", sep = "_")
-pain_threshold_data2 <- pain_threshold_data2[, -5]
-pain_threshold_agg <- aggregate(pain_threshold_data2, by=list(as.logical(as.integer(pain_threshold_data2$group)-1), as.numeric(pain_threshold_data2$time)), FUN=mean, na.rm=TRUE)
-
-hist(pain_threshold_data2$pain_threshold)
-
-pdf("Fig_pain_threshold.pdf")
+pdf("Fig_thumb_pressure.pdf")
 par(mar=c(6, 5, 1, 1))
-plot(pain_threshold ~ time, data = pain_threshold_data2, pch = "", xlab = "Time of measurement", ylab = "Pain threshold", main = "", bty = "n", cex.axis = 2, cex.lab = 2, mgp = c(3.5, 1.5, 0))
-for (i in unique(pain_threshold_data2$subject[pain_threshold_data2$group == "Endotoxin"])){
-  lines(pain_threshold ~ time, data = pain_threshold_data2[pain_threshold_data2$subject == i, ], col = "pink")
-}
-for (i in unique(pain_threshold_data2$subject[pain_threshold_data2$group == "Placebo"])){
-  lines(pain_threshold ~ time, data = pain_threshold_data2[pain_threshold_data2$subject == i, ], col = "lightblue")
-}
-lines(pain_threshold ~ time, data = pain_threshold_agg[pain_threshold_agg$Group.1 == TRUE, ], col = "blue", lwd = 3)
-lines(pain_threshold ~ time, data = pain_threshold_agg[pain_threshold_agg$Group.1 == FALSE, ], col = "red", lwd = 3)
-legend("topleft", legend = c("Endotoxin", "Placebo"), col = c("red", "blue"), lty = 1, lwd = 3, bty = "n", cex = 2)
+boxplot(data$pain_thumb_pressure[data$group == "Placebo"], data$pain_thumb_pressure[data$group == "Endotoxin"], frame.plot = F, border = c("blue", "red"), ylab = "kPa", names = c("Placebo", "Endotoxin"))
 dev.off()
 
-data$pain_threshold_responses <- data$pain_threshold_diff
-boxplot(pain_threshold_responses ~ group, data = data, frame.plot = F, main = "pain_threshold difference", ylab = " pg/ml")
-ttest_pain_threshold <- t.test(pain_threshold_responses ~ group, data = data)
-es_pain_threshold <- tes(t = ttest_pain_threshold$statistic, n.1 = length(data$pain_threshold_responses[data$group == "Endotoxin"]), n.2 = length(data$pain_threshold_responses[data$group == "Placebo"]))
-legend("topright", legend = paste("d = ", es_pain_threshold$d, " [", es_pain_threshold$l.d, ", ", es_pain_threshold$u.d, "]", sep = ""), bty = "n")
+boxplot(data$pain_thumb_pressure[data$group == "Placebo"], data$pain_thumb_pressure[data$group == "Endotoxin"], frame.plot = F, border = c("blue", "red"), ylab = "Score", names = c("Placebo", "Endotoxin"))
+ttest_thumb_pressure <- t.test(data$pain_thumb_pressure[data$group == "Endotoxin"], data$pain_thumb_pressure[data$group == "Placebo"])
+es_thumb_pressure <- tes(t = ttest_thumb_pressure$statistic, n.1 = length(data$pain_thumb_pressure[data$group == "Endotoxin"]), n.2 = length(data$pain_thumb_pressure[data$group == "Placebo"]))
+legend("topright", legend = paste("d = ", es_thumb_pressure$d, " [", es_thumb_pressure$l.d, ", ", es_thumb_pressure$u.d, "]", sep = ""), bty = "n")
+
+
+# 17. Thumb pressure pain
+pdf("Fig_thumb_pressure.pdf")
+par(mar=c(6, 5, 1, 1))
+boxplot(data$pain_thumb_pressure[data$group == "Placebo"], data$pain_thumb_pressure[data$group == "Endotoxin"], frame.plot = F, border = c("blue", "red"), ylab = "kPa", names = c("Placebo", "Endotoxin"))
+dev.off()
+
+boxplot(data$pain_thumb_pressure[data$group == "Placebo"], data$pain_thumb_pressure[data$group == "Endotoxin"], frame.plot = F, border = c("blue", "red"), ylab = "Score", names = c("Placebo", "Endotoxin"))
+ttest_thumb_pressure <- t.test(data$pain_thumb_pressure[data$group == "Endotoxin"], data$pain_thumb_pressure[data$group == "Placebo"])
+es_thumb_pressure <- tes(t = ttest_thumb_pressure$statistic, n.1 = length(data$pain_thumb_pressure[data$group == "Endotoxin"]), n.2 = length(data$pain_thumb_pressure[data$group == "Placebo"]))
+legend("topright", legend = paste("d = ", es_thumb_pressure$d, " [", es_thumb_pressure$l.d, ", ", es_thumb_pressure$u.d, "]", sep = ""), bty = "n")
+
+
+# 17. Pain threshold difference
+pdf("Fig_pain_threshold_diff.pdf")
+par(mar=c(6, 5, 1, 1))
+boxplot(data$pain_threshold_diff[data$group == "Placebo"], data$pain_threshold_diff[data$group == "Endotoxin"], frame.plot = F, border = c("blue", "red"), ylab = "kPa", names = c("Placebo", "Endotoxin"))
+dev.off()
+
+boxplot(data$pain_threshold_diff[data$group == "Placebo"], data$pain_threshold_diff[data$group == "Endotoxin"], frame.plot = F, border = c("blue", "red"), ylab = "Score", names = c("Placebo", "Endotoxin"))
+ttest_pain_threshold_diff <- t.test(data$pain_threshold_diff[data$group == "Endotoxin"], data$pain_threshold_diff[data$group == "Placebo"])
+es_pain_threshold_diff <- tes(t = ttest_pain_threshold_diff$statistic, n.1 = length(data$pain_threshold_diff[data$group == "Endotoxin"]), n.2 = length(data$pain_threshold_diff[data$group == "Placebo"]))
+legend("topright", legend = paste("d = ", es_pain_threshold_diff$d, " [", es_pain_threshold_diff$l.d, ", ", es_pain_threshold_diff$u.d, "]", sep = ""), bty = "n")
 
 
 # WRITE DATA IN LONG FORMAT
@@ -492,9 +495,9 @@ write.csv(SelfRatedDataLong, file = "C:/Users/Gustav Nilsonne/Box Sync/Gustavs_a
 
 # TABULATE EFFECTS OF ENDOTOXIN
 effects_table <- data.frame(variable = c("Heart rate", "Temperature", "Systolic blood pressure", "log IL-6", "log IL-8", "log IL-10", "log IL-13", "log TNF",
-                                         "SQ", "Self-rated health now", "Headache", "Back pain", "Nausea", "Pain threshold"))
+                                         "SQ", "SRH5", "Self-rated health now", "Headache", "Back pain", "Nausea", "Thumb pain", "Pain threshold diff"))
 effects_table$timepoints_for_comparison <- c("3 and 4 vs 1", "3 and 4 vs 1", "3 vs 1", "2 and 3 vs 1", "2 and 3 vs 1", "2 and 3 vs 1", "2 and 3 vs 1", "2 and 3 vs 1",
-                              "2 vs 1", "2 vs 1", "3 and 4 vs 1", "3 and 4 vs 1", "3 and 4 vs 1", "2 vs 1")
+                              "2 vs 1", "2", "2 vs 1", "3 and 4 vs 1", "3 and 4 vs 1", "3 and 4 vs 1", "1", "2 vs 1")
 effects_table$effect_orig_scale <- c(ttest_HR$estimate[1] - ttest_HR$estimate[2], 
                                      ttest_temp$estimate[1] - ttest_temp$estimate[2],
                                      ttest_BP_systolic$estimate[1] - ttest_BP_systolic$estimate[2],
@@ -504,11 +507,13 @@ effects_table$effect_orig_scale <- c(ttest_HR$estimate[1] - ttest_HR$estimate[2]
                                      ttest_IL13$estimate[1] - ttest_IL13$estimate[2],
                                      ttest_TNF$estimate[1] - ttest_TNF$estimate[2],
                                      ttest_sq$estimate[1] - ttest_sq$estimate[2],
+                                     ttest_srh5$estimate[1] - ttest_srh5$estimate[2],
                                      ttest_health_now$estimate[1] - ttest_health_now$estimate[2],
                                      ttest_headache$estimate[1] - ttest_headache$estimate[2],
                                      ttest_back_pain$estimate[1] - ttest_back_pain$estimate[2],
                                      ttest_nausea$estimate[1] - ttest_nausea$estimate[2],
-                                     ttest_pain_threshold$estimate[1] - ttest_pain_threshold$estimate[2])
+                                     ttest_thumb_pressure$estimate[1] - ttest_thumb_pressure$estimate[2],
+                                     ttest_pain_threshold_diff$estimate[1] - ttest_pain_threshold_diff$estimate[2])
 effects_table$CI_orig_scale_lower <- c(ttest_HR$conf.int[1], 
                                        ttest_temp$conf.int[1],
                                  ttest_BP_systolic$conf.int[1],
@@ -518,11 +523,13 @@ effects_table$CI_orig_scale_lower <- c(ttest_HR$conf.int[1],
                                  ttest_IL13$conf.int[1],
                                  ttest_TNF$conf.int[1],
                                  ttest_sq$conf.int[1],
+                                 ttest_srh5$conf.int[1],
                                  ttest_health_now$conf.int[1],
                                  ttest_headache$conf.int[1],
                                  ttest_back_pain$conf.int[1],
                                  ttest_nausea$conf.int[1],
-                                 ttest_pain_threshold$conf.int[1])
+                                 ttest_thumb_pressure$conf.int[1],
+                                 ttest_pain_threshold_diff$conf.int[1])
 effects_table$CI_orig_scale_upper <- c(ttest_HR$conf.int[2], 
                                        ttest_temp$conf.int[2],
                                        ttest_BP_systolic$conf.int[2],
@@ -532,17 +539,19 @@ effects_table$CI_orig_scale_upper <- c(ttest_HR$conf.int[2],
                                        ttest_IL13$conf.int[2],
                                        ttest_TNF$conf.int[2],
                                        ttest_sq$conf.int[2],
+                                       ttest_srh5$conf.int[2],
                                        ttest_health_now$conf.int[2],
                                        ttest_headache$conf.int[2],
                                        ttest_back_pain$conf.int[2],
                                        ttest_nausea$conf.int[2],
-                                       ttest_pain_threshold$conf.int[2])
+                                       ttest_thumb_pressure$conf.int[2],
+                                       ttest_pain_threshold_diff$conf.int[2])
 effects_table$d <- c(es_HR$d, es_temp$d, es_BP_systolic$d, es_IL6$d, es_IL8$d, es_IL10$d, es_IL13$d, es_TNF$d,
-                     es_sq$d, es_health_now$d, es_headache$d, es_back_pain$d, es_nausea$d, es_pain_threshold$d)
+                     es_sq$d, es_srh5$d, es_health_now$d, es_headache$d, es_back_pain$d, es_nausea$d, es_thumb_pressure$d, es_pain_threshold_diff$d)
 effects_table$CI_d_lower <- c(es_HR$l.d, es_temp$l.d, es_BP_systolic$l.d, es_IL6$l.d, es_IL8$l.d, es_IL10$l.d, es_IL13$l.d, es_TNF$l.d,
-                              es_sq$l.d, es_health_now$l.d, es_headache$l.d, es_back_pain$l.d, es_nausea$l.d, es_pain_threshold$l.d)
+                              es_sq$l.d, es_srh5$l.d, es_health_now$l.d, es_headache$l.d, es_back_pain$l.d, es_nausea$l.d, es_thumb_pressure$l.d, es_pain_threshold_diff$l.d)
 effects_table$CI_d_upper <- c(es_HR$u.d, es_temp$u.d, es_BP_systolic$u.d, es_IL6$u.d, es_IL8$u.d, es_IL10$u.d, es_IL13$u.d, es_TNF$u.d,
-                              es_sq$u.d, es_health_now$u.d, es_headache$u.d, es_back_pain$u.d, es_nausea$u.d, es_pain_threshold$u.d)
+                              es_sq$u.d, es_srh5$u.d, es_health_now$u.d, es_headache$u.d, es_back_pain$u.d, es_nausea$u.d, es_thumb_pressure$u.d, es_pain_threshold_diff$u.d)
 effects_table$t <- c(ttest_HR$statistic, ttest_temp$statistic,
                      ttest_BP_systolic$statistic,
                      ttest_IL6$statistic,
@@ -551,11 +560,13 @@ effects_table$t <- c(ttest_HR$statistic, ttest_temp$statistic,
                      ttest_IL13$statistic,
                      ttest_TNF$statistic,
                      ttest_sq$statistic,
+                     ttest_srh5$statistic,
                      ttest_health_now$statistic,
                      ttest_headache$statistic,
                      ttest_back_pain$statistic,
                      ttest_nausea$statistic,
-                     ttest_pain_threshold$statistic)
+                     ttest_thumb_pressure$statistic,
+                     ttest_pain_threshold_diff$statistic)
 effects_table$df <- c(ttest_HR$parameter, ttest_temp$parameter,
                       ttest_BP_systolic$parameter,
                       ttest_IL6$parameter,
@@ -564,11 +575,13 @@ effects_table$df <- c(ttest_HR$parameter, ttest_temp$parameter,
                       ttest_IL13$parameter,
                       ttest_TNF$parameter,
                       ttest_sq$parameter,
+                      ttest_srh5$parameter,
                       ttest_health_now$parameter,
                       ttest_headache$parameter,
                       ttest_back_pain$parameter,
                       ttest_nausea$parameter,
-                      ttest_pain_threshold$parameter)
+                      ttest_thumb_pressure$parameter,
+                      ttest_pain_threshold_diff$parameter)
 effects_table$p <- c(ttest_HR$p.value, ttest_temp$p.value,
                      ttest_BP_systolic$p.value,
                      ttest_IL6$p.value,
@@ -577,11 +590,13 @@ effects_table$p <- c(ttest_HR$p.value, ttest_temp$p.value,
                      ttest_IL13$p.value,
                      ttest_TNF$p.value,
                      ttest_sq$p.value,
+                     ttest_srh5$p.value,
                      ttest_health_now$p.value,
                      ttest_headache$p.value,
                      ttest_back_pain$p.value,
                      ttest_nausea$p.value,
-                     ttest_pain_threshold$p.value)
+                     ttest_thumb_pressure$p.value,
+                     ttest_pain_threshold_diff$p.value)
 effects_table$p_fdr <- p.adjust(effects_table$p, method = "fdr")
 write.csv(effects_table, file = "C:/Users/Gustav Nilsonne/Box Sync/Gustavs_arbete/Pek/Endotoxin resting state/Endotoxin_RestingState_2015/EffectsTable.csv", row.names=FALSE)
 
@@ -757,23 +772,21 @@ legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(
   as.expression(bquote(p == .(round(summary(lm_health_now)$coefficients[2, 4], 2))))))
 dev.off()
 
-# TODO: Debug the following paragraph
-# It will not accept formula specifications as in the others, for some reason
 pdf("Fig_srh5corr.pdf")
 par(mar=c(6, 5, 0, 1))
-plot(data[data$group == "Endotoxin", ]$midcingulate_insula_conn ~ data[data$group == "Endotoxin", ]$srh5, bty = "n", xlab = "Score", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
+plot(midcingulate_insula_conn ~ srh5_2, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "Score", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
 axis(2, at = c(-0.3, -0.1, 0.1, 0.3), cex.axis = 2.5)
-lm_srh5 <- lm(data[data$group == "Endotoxin", ]$midcingulate_insula_conn ~ data[data$group == "Endotoxin", ]$srh5)
+lm_srh5 <- lm(midcingulate_insula_conn ~ srh5_2, data = data[data$group == "Endotoxin", ])
 X <- c(min(data$srh5, na.rm = T), max(data$srh5, na.rm = T))
-Y <- predict(lm_srh5, newdata=data.frame(srh5=X))
+Y <- predict(lm_srh5, newdata=data.frame(srh5_2=X))
 lines(x=X, y=Y, col = "red", lwd = 2)
 coef <- round(lm_srh5$coefficients[2], 2)
 #coefLower <- round(confint(lm_health_now)[2, 1], 2)
 #coefUpper <- round(confint(lm_health_now)[2, 2], 2)
 legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
   as.expression(bquote(beta == .(coef))),
-  as.expression(bquote(r[2] == .(round(summary(lm_health_now)$r.squared, 2)))),
-  as.expression(bquote(p == .(round(summary(lm_health_now)$coefficients[2, 4], 2))))))
+  as.expression(bquote(r[2] == .(round(summary(lm_srh5)$r.squared, 2)))),
+  as.expression(bquote(p == .(round(summary(lm_srh5)$coefficients[2, 4], 2))))))
 dev.off()
 
 pdf("Fig_headachecorr.pdf")
@@ -829,11 +842,28 @@ dev.off()
 
 pdf("Fig_pain_thresholdcorr.pdf")
 par(mar=c(6, 5, 0, 1))
-plot(midcingulate_insula_conn ~ pain_threshold_responses, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "Score", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
+plot(midcingulate_insula_conn ~ pain_threshold_diff, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "Score", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
 axis(2, at = c(-0.3, -0.1, 0.1, 0.3), cex.axis = 2.5)
-lm_pain_threshold <- lm(midcingulate_insula_conn ~ pain_threshold_responses, data = data[data$group == "Endotoxin", ])
-X <- c(min(data$pain_threshold_responses, na.rm = T), max(data$pain_threshold_responses, na.rm = T))
-Y <- predict(lm_pain_threshold, newdata=data.frame(pain_threshold_responses=X))
+lm_pain_threshold <- lm(midcingulate_insula_conn ~ pain_threshold_diff, data = data[data$group == "Endotoxin", ])
+X <- c(min(data$pain_threshold_diff, na.rm = T), max(data$pain_threshold_diff, na.rm = T))
+Y <- predict(lm_pain_threshold, newdata=data.frame(pain_threshold_diff=X))
+lines(x=X, y=Y, col = "red", lwd = 2)
+coef <- round(lm_pain_threshold$coefficients[2], 2)
+#coefLower <- round(confint(lm_pain_threshold)[2, 1], 2)
+#coefUpper <- round(confint(lm_pain_threshold)[2, 2], 2)
+legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
+  as.expression(bquote(beta == .(coef))),
+  as.expression(bquote(r[2] == .(round(summary(lm_pain_threshold)$r.squared, 2)))),
+  as.expression(bquote(p == .(round(summary(lm_pain_threshold)$coefficients[2, 4], 2))))))
+dev.off()
+
+pdf("Fig_thumb_pressurecorr.pdf")
+par(mar=c(6, 5, 0, 1))
+plot(midcingulate_insula_conn ~ pain_thumb_pressure, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "Score", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
+axis(2, at = c(-0.3, -0.1, 0.1, 0.3), cex.axis = 2.5)
+lm_pain_threshold <- lm(midcingulate_insula_conn ~ pain_thumb_pressure, data = data[data$group == "Endotoxin", ])
+X <- c(min(data$pain_thumb_pressure, na.rm = T), max(data$pain_thumb_pressure, na.rm = T))
+Y <- predict(lm_pain_threshold, newdata=data.frame(pain_thumb_pressure=X))
 lines(x=X, y=Y, col = "red", lwd = 2)
 coef <- round(lm_pain_threshold$coefficients[2], 2)
 #coefLower <- round(confint(lm_pain_threshold)[2, 1], 2)
