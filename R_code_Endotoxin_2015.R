@@ -848,7 +848,7 @@ lm_pain_threshold <- lm(midcingulate_insula_conn ~ pain_threshold_diff, data = d
 X <- c(min(data$pain_threshold_diff, na.rm = T), max(data$pain_threshold_diff, na.rm = T))
 Y <- predict(lm_pain_threshold, newdata=data.frame(pain_threshold_diff=X))
 lines(x=X, y=Y, col = "red", lwd = 2)
-coef <- round(lm_pain_threshold$coefficients[2], 2)
+coef <- round(lm_pain_threshold$coefficients[2], 4)
 #coefLower <- round(confint(lm_pain_threshold)[2, 1], 2)
 #coefUpper <- round(confint(lm_pain_threshold)[2, 2], 2)
 legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
@@ -861,15 +861,15 @@ pdf("Fig_thumb_pressurecorr.pdf")
 par(mar=c(6, 5, 0, 1))
 plot(midcingulate_insula_conn ~ pain_thumb_pressure, data = data[data$group == "Endotoxin", ], bty = "n", xlab = "Score", ylab = "Connectivity (unit)", cex.axis = 2.5, cex.lab = 2.5, pch = 16, cex = 2, col = "red", yaxt = "n")
 axis(2, at = c(-0.3, -0.1, 0.1, 0.3), cex.axis = 2.5)
-lm_pain_threshold <- lm(midcingulate_insula_conn ~ pain_thumb_pressure, data = data[data$group == "Endotoxin", ])
+lm_thumb_pressure <- lm(midcingulate_insula_conn ~ pain_thumb_pressure, data = data[data$group == "Endotoxin", ])
 X <- c(min(data$pain_thumb_pressure, na.rm = T), max(data$pain_thumb_pressure, na.rm = T))
-Y <- predict(lm_pain_threshold, newdata=data.frame(pain_thumb_pressure=X))
+Y <- predict(lm_thumb_pressure, newdata=data.frame(pain_thumb_pressure=X))
 lines(x=X, y=Y, col = "red", lwd = 2)
-coef <- round(lm_pain_threshold$coefficients[2], 2)
+coef <- round(lm_thumb_pressure$coefficients[2], 2)
 #coefLower <- round(confint(lm_pain_threshold)[2, 1], 2)
 #coefUpper <- round(confint(lm_pain_threshold)[2, 2], 2)
 legend("bottomleft", bty = "n", cex = 2.5, inset = c(-0.07, -0.02), legend = c(  
   as.expression(bquote(beta == .(coef))),
-  as.expression(bquote(r[2] == .(round(summary(lm_pain_threshold)$r.squared, 2)))),
-  as.expression(bquote(p == .(round(summary(lm_pain_threshold)$coefficients[2, 4], 2))))))
+  as.expression(bquote(r[2] == .(round(summary(lm_thumb_pressure)$r.squared, 2)))),
+  as.expression(bquote(p == .(round(summary(lm_thumb_pressure)$coefficients[2, 4], 2))))))
 dev.off()
