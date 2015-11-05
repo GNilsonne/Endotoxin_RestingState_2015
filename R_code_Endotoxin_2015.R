@@ -125,6 +125,13 @@ data$logIL6_2 <- log(data$logIL6_2)
 data$logIL6_3 <- data$IL6_3
 data$logIL6_3[data$logIL6_3 < 0.9] <- 0.9
 data$logIL6_3 <- log(data$logIL6_3)
+
+data$logIL6_23 <- rowMeans(cbind(data$logIL6_2, data$logIL6_3), na.rm = T)
+mean(data$logIL6_1[data$group == "Placebo"], na.rm = T)
+mean(data$logIL6_23[data$group == "Placebo"], na.rm = T)
+mean(data$logIL6_1[data$group == "Endotoxin"], na.rm = T)
+mean(data$logIL6_23[data$group == "Endotoxin"], na.rm = T)
+
 data$IL6_responses <- rowMeans(cbind(data$logIL6_2, data$logIL6_3), na.rm = T) - data$logIL6_1 # We use the mean of the 2nd and 3rd measures to estimate effect of endotoxin
 boxplot(IL6_responses ~ group, data = data, frame.plot = F, main = "IL6 difference", ylab = "log pg/ml")
 ttest_IL6 <- t.test(IL6_responses ~ group, data = data)
@@ -164,6 +171,13 @@ data$logIL8_2 <- log(data$logIL8_2)
 data$logIL8_3 <- data$IL8_3
 data$logIL8_3[data$logIL8_3 < 0.4] <- 0.4
 data$logIL8_3 <- log(data$logIL8_3)
+
+data$logIL8_23 <- rowMeans(cbind(data$logIL8_2, data$logIL8_3), na.rm = T)
+mean(data$logIL8_1[data$group == "Placebo"], na.rm = T)
+mean(data$logIL8_23[data$group == "Placebo"], na.rm = T)
+mean(data$logIL8_1[data$group == "Endotoxin"], na.rm = T)
+mean(data$logIL8_23[data$group == "Endotoxin"], na.rm = T)
+
 data$IL8_responses <- rowMeans(cbind(data$logIL8_2, data$logIL8_3), na.rm = T) - data$logIL8_1 # We use the mean of the 2nd and 3rd measures to estimate effect of endotoxin
 boxplot(IL8_responses ~ group, data = data, frame.plot = F, main = "IL8 difference", ylab = "log pg/ml")
 ttest_IL8 <- t.test(IL8_responses ~ group, data = data)
@@ -281,6 +295,13 @@ data$logTNF_2 <- log(data$logTNF_2)
 data$logTNF_3 <- data$TNF_3
 data$logTNF_3[data$logTNF_3 < 0.7] <- 0.7
 data$logTNF_3 <- log(data$logTNF_3)
+
+data$logTNF_23 <- rowMeans(cbind(data$logTNF_2, data$logTNF_3), na.rm = T)
+mean(data$logTNF_1[data$group == "Placebo"], na.rm = T)
+mean(data$logTNF_23[data$group == "Placebo"], na.rm = T)
+mean(data$logTNF_1[data$group == "Endotoxin"], na.rm = T)
+mean(data$logTNF_23[data$group == "Endotoxin"], na.rm = T)
+
 data$TNF_responses <- rowMeans(cbind(data$logTNF_2, data$logTNF_3), na.rm = T) - data$logTNF_1 # We use the mean of the 2nd and 3rd measures to estimate effect of endotoxin
 boxplot(TNF_responses ~ group, data = data, frame.plot = F, main = "TNF difference", ylab = "log pg/ml")
 ttest_TNF <- t.test(TNF_responses ~ group, data = data)
@@ -308,6 +329,10 @@ legend("topleft", legend = c("Endotoxin", "Placebo"), col = c("red", "blue"), lt
 axis(1, at = c(1, 2, 3, 4), cex.axis = 2, cex.lab = 2)
 dev.off()
 
+mean(data$sq_1[data$group == "Placebo"], na.rm = T)
+mean(data$sq_2[data$group == "Placebo"], na.rm = T)
+mean(data$sq_1[data$group == "Endotoxin"], na.rm = T)
+mean(data$sq_2[data$group == "Endotoxin"], na.rm = T)
 data$sq_responses <- data$sq_2 - data$sq_1 # We use the 2nd vs the 1st measure to estimate effect of endotoxin
 boxplot(sq_responses ~ group, data = data, frame.plot = F, main = "sq difference", ylab = " pg/ml")
 ttest_sq <- t.test(sq_responses ~ group, data = data)
@@ -376,6 +401,11 @@ lines(headache ~ time, data = headache_agg[headache_agg$Group.1 == FALSE, ], col
 legend("topleft", legend = c("Endotoxin", "Placebo"), col = c("red", "blue"), lty = 1, lwd = 3, bty = "n", cex = 2)
 dev.off()
 
+data$headache_23 <- rowMeans(cbind(data$headache_2, data$headache_3), na.rm = T)
+mean(data$headache_0[data$group == "Placebo"], na.rm = T)
+mean(data$headache_23[data$group == "Placebo"], na.rm = T)
+mean(data$headache_0[data$group == "Endotoxin"], na.rm = T)
+mean(data$headache_23[data$group == "Endotoxin"], na.rm = T)
 data$headache_responses <- rowMeans(cbind(data$headache_2, data$headache_3), na.rm = T) - data$headache_0 # We use the mean of the 3rd and 4th measures to estimate effect of endotoxin
 boxplot(headache_responses ~ group, data = data, frame.plot = F, main = "headache difference", ylab = " pg/ml")
 ttest_headache <- t.test(headache_responses ~ group, data = data)
@@ -405,6 +435,11 @@ lines(back_pain ~ time, data = back_pain_agg[back_pain_agg$Group.1 == FALSE, ], 
 legend("topleft", legend = c("Endotoxin", "Placebo"), col = c("red", "blue"), lty = 1, lwd = 3, bty = "n", cex = 2)
 dev.off()
 
+data$back_pain_23 <- rowMeans(cbind(data$back_pain_2, data$back_pain_3), na.rm = T)
+mean(data$back_pain_0[data$group == "Placebo"], na.rm = T)
+mean(data$back_pain_23[data$group == "Placebo"], na.rm = T)
+mean(data$back_pain_0[data$group == "Endotoxin"], na.rm = T)
+mean(data$back_pain_23[data$group == "Endotoxin"], na.rm = T)
 data$back_pain_responses <- rowMeans(cbind(data$back_pain_2, data$back_pain_3), na.rm = T) - data$back_pain_0 # We use the mean of the 3rd and 4th measures to estimate effect of endotoxin
 boxplot(back_pain_responses ~ group, data = data, frame.plot = F, main = "back_pain difference", ylab = " pg/ml")
 ttest_back_pain <- t.test(back_pain_responses ~ group, data = data)
@@ -434,6 +469,11 @@ lines(nausea ~ time, data = nausea_agg[nausea_agg$Group.1 == FALSE, ], col = "re
 legend("topleft", legend = c("Endotoxin", "Placebo"), col = c("red", "blue"), lty = 1, lwd = 3, bty = "n", cex = 2)
 dev.off()
 
+data$nausea_23 <- rowMeans(cbind(data$nausea_2, data$nausea_3), na.rm = T)
+mean(data$nausea_0[data$group == "Placebo"], na.rm = T)
+mean(data$nausea_23[data$group == "Placebo"], na.rm = T)
+mean(data$nausea_0[data$group == "Endotoxin"], na.rm = T)
+mean(data$nausea_23[data$group == "Endotoxin"], na.rm = T)
 data$nausea_responses <- rowMeans(cbind(data$nausea_2, data$nausea_3), na.rm = T) - data$nausea_0 # We use the mean of the 3rd and 4th measures to estimate effect of endotoxin
 boxplot(nausea_responses ~ group, data = data, frame.plot = F, main = "nausea difference", ylab = " pg/ml")
 ttest_nausea <- t.test(nausea_responses ~ group, data = data)
