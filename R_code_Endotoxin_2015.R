@@ -312,6 +312,7 @@ legend("topright", legend = paste("d = ", es_TNF$d, " [", es_TNF$l.d, ", ", es_T
 # 9. SQ
 sq_data <- data[, c("subject", "group", "sq_1", "sq_2", "sq_4")]
 sq_data <- reshape(sq_data, direction = 'long', varying = 3:5, v.names = "sq", timevar = "time", sep = "_")
+sq_data$sq <- sq_data$sq - 10 # Rescale to atart at 0
 sq_agg <- aggregate(sq_data, by=list(as.logical(as.integer(sq_data$group)-1), as.numeric(sq_data$time)), FUN=mean, na.rm=TRUE)
 
 pdf("Fig_sq.pdf")
@@ -329,10 +330,10 @@ legend("topleft", legend = c("Endotoxin", "Placebo"), col = c("red", "blue"), lt
 axis(1, at = c(1, 2, 3, 4), cex.axis = 2, cex.lab = 2)
 dev.off()
 
-mean(data$sq_1[data$group == "Placebo"], na.rm = T)
-mean(data$sq_2[data$group == "Placebo"], na.rm = T)
-mean(data$sq_1[data$group == "Endotoxin"], na.rm = T)
-mean(data$sq_2[data$group == "Endotoxin"], na.rm = T)
+mean(data$sq_1[data$group == "Placebo"], na.rm = T) -10
+mean(data$sq_2[data$group == "Placebo"], na.rm = T) -10
+mean(data$sq_1[data$group == "Endotoxin"], na.rm = T) -10
+mean(data$sq_2[data$group == "Endotoxin"], na.rm = T) -10
 data$sq_responses <- data$sq_2 - data$sq_1 # We use the 2nd vs the 1st measure to estimate effect of endotoxin
 boxplot(sq_responses ~ group, data = data, frame.plot = F, main = "sq difference", ylab = " pg/ml")
 ttest_sq <- t.test(sq_responses ~ group, data = data)
